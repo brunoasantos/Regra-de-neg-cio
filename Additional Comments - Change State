@@ -1,0 +1,26 @@
+(function executeRule(current, previous /*null when async*/ ) {
+
+	var gr = new GlideRecord('sc_req_item');
+	gr.addQuery('request_item', current.sys_id);
+	gr.query();
+
+	if (gr.next()) {
+		var comments = current.comments.getJournalEntry(1).match(/\n.*/gm).join("\n"); //O Regex elimina nome, data e hora. Captura somente a string 
+		
+		var palavra_chave = 'work';
+		var index = comments.indexOf(palavra_chave);
+		
+		var palavra_chave_2 = 'complete';
+		var index_2 = comments.indexOf(palavra_chave_2);
+
+		if (index != -1) {
+			current.state = 2;
+			current.update();
+			
+		} else if (index_2 != -1) {
+			current.state = 3;
+			current.update();
+		}
+	}
+
+})(current, previous);
